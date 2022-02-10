@@ -33,8 +33,7 @@ var _ = Describe("Shapes", func() {
 			Expect(got).To(Equal(want))
 		})
 
-		It("parametrized cases", func() {
-
+		Describe("parametrized cases", func() {
 			areaTests := []struct {
 				shape shapes.Shape
 				want  float64
@@ -44,9 +43,11 @@ var _ = Describe("Shapes", func() {
 				{shapes.Circle{100}, 31415.926535897932},
 			}
 
-			for _, testCase := range areaTests {
-				got := testCase.shape.Area()
-				Expect(got).To(Equal(testCase.want))
+			for _, tc := range areaTests {
+				It("parametrized case", func() {
+					got := tc.shape.Area()
+					Expect(got).To(Equal(tc.want))
+				})
 			}
 		})
 	})
