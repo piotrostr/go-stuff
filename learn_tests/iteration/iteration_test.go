@@ -5,6 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"learn_tests/iteration"
+	"testing"
 )
 
 var _ = Describe("Iteration", func() {
@@ -17,3 +18,9 @@ var _ = Describe("Iteration", func() {
 		Expect(iteration.Repeat("c")).To(Equal("ccccc"))
 	})
 })
+
+func BenchmarkRepeat(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		iteration.Repeat("a")
+	}
+}
