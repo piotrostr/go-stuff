@@ -33,6 +33,13 @@ var _ = Describe("Shapes", func() {
 			Expect(got).To(Equal(want))
 		})
 
+		It("should calculate triangle shape right", func() {
+			triangle := shapes.Triangle{10.0, 10.0}
+			got := triangle.Area()
+			want := 10.0 * 10.0 * 0.5
+			Expect(got).To(Equal(want))
+		})
+
 		Describe("parametrized cases", func() {
 			areaTests := []struct {
 				shape shapes.Shape
