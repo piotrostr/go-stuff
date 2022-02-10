@@ -24,4 +24,13 @@ var _ = Describe("Arrays", func() {
 			Expect(arrays.Sum(numbers)).To(Equal(7))
 		})
 	})
+	Describe("SumAll", func() {
+		It("Should sum arrays and return array", func() {
+			arr1 := []int{1, 2}
+			arr2 := []int{0, 9}
+			got := arrays.SumAll(arr1, arr2)
+			want := []int{3, 9}
+			Expect(got).To(Equal(want))
+		})
+	})
 })
