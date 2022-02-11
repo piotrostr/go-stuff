@@ -10,16 +10,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("WebsiteRacer", func() {
+var _ = Describe("Racer", func() {
 	It("races", func() {
-		slowServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			time.Sleep(20 * time.Millisecond)
-			w.WriteHeader(http.StatusOK)
-		}))
+		slowServer := makeDelayedServer(20 * time.Millisecond)
+		fastServer := makeDelayedServer(0 * time.Millisecond)
 
-		fastServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-		}))
+		defer slowServer.Close()
+		defer fastServer.Close()
 
 		slowURL := slowServer.URL
 		fastURL := fastServer.URL
@@ -27,8 +24,14 @@ var _ = Describe("WebsiteRacer", func() {
 		got := website_racer.Racer(slowURL, fastURL)
 
 		Expect(got).To(Equal(fastURL))
-
-		slowServer.Close()
-		fastServer.Close()
 	})
 })
+
+func makeDelayedServer(delay time.Duration) *httptest.Server {
+	return httptest.NewServer(
+		http.HandlerFunc(
+			func(w http.ResponseWriter, r *http.Request) {
+				time.Sleep(delay)
+				w.WriteHeader(http.StatusOK)
+			}))
+}
