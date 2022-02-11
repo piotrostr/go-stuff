@@ -1,7 +1,7 @@
 package website_racer_test
 
 import (
-	"learn_tests/website_racer"
+	. "learn_tests/website_racer"
 	"net/http"
 	"net/http/httptest"
 	"time"
@@ -14,16 +14,18 @@ var _ = Describe("Racer", func() {
 	It("races", func() {
 		slowServer := makeDelayedServer(20 * time.Millisecond)
 		fastServer := makeDelayedServer(0 * time.Millisecond)
-
 		defer slowServer.Close()
 		defer fastServer.Close()
+		faster, err := Racer(slowServer.URL, fastServer.URL)
+		Expect(err).To(BeNil())
+		Expect(faster).To(Equal(fastServer.URL))
+	})
 
-		slowURL := slowServer.URL
-		fastURL := fastServer.URL
-
-		got := website_racer.Racer(slowURL, fastURL)
-
-		Expect(got).To(Equal(fastURL))
+	It("returns an error if the waiting time is over 10 seconds", func() {
+		verySlowServer := makeDelayedServer(11 * time.Second)
+		defer verySlowServer.Close()
+		_, err := Racer(verySlowServer.URL, verySlowServer.URL)
+		Expect(err).To(MatchError("timeout"))
 	})
 })
 
