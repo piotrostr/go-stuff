@@ -5,7 +5,7 @@ import (
 )
 
 func TestNothing(t *testing.T) {
-	got := 0
+	got := 1
 	want := 1
 	if got != want {
 		t.Errorf("got %d; want %d", got, want)

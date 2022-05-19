@@ -17,7 +17,7 @@ func main() {
 	value, ok := <-ch
 
 	if !ok {
-		fmt.Println("channel closed")
+		  fmt.Println("channel closed")
 	}
 
 	fmt.Println(value)
