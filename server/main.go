@@ -34,17 +34,17 @@ func SetupServer() *http.Server {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hello"))
+	fmt.Fprintln(w, "hello")
 }
 
 func main() {
 	server := SetupServer()
 
-	done := make(chan bool)
+	done := make(chan bool, 1)
 	quit := make(chan os.Signal, 1)
+
 	signal.Notify(quit, os.Interrupt)
 
-	// start goroutine
 	go func() {
 		<-quit
 		server.ErrorLog.Println("shutting down...")
