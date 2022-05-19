@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 )
 
 var port int
@@ -16,11 +20,17 @@ func SetupServer() *http.Server {
 	router := http.NewServeMux()
 	router.HandleFunc("/", index)
 
-	server := http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: router,
+	logger := log.New(os.Stdout, "", log.LstdFlags)
+
+	server := &http.Server{
+		Addr:         fmt.Sprintf(":%d", port),
+		Handler:      router,
+		ErrorLog:     logger,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		IdleTimeout:  5 * time.Second,
 	}
-	return &server
+	return server
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -29,8 +39,30 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	server := SetupServer()
-	fmt.Print(server.Addr, "\n")
+
+	done := make(chan bool)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+
+	// start goroutine
+	go func() {
+		<-quit
+		server.ErrorLog.Println("shutting down...")
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		server.SetKeepAlivesEnabled(false)
+		if err := server.Shutdown(ctx); err != nil {
+			server.ErrorLog.Fatalf("could not gracefully shutdown %s", err)
+		}
+		close(done)
+	}()
+
+	server.ErrorLog.Printf("starting on %s\n", server.Addr)
+
 	if err := server.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatalf("%s", err)
 	}
+
+	<-done
+	server.ErrorLog.Println("server stopped")
 }
