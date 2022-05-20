@@ -16,27 +16,35 @@ me studying the art of gopher
 
 - coc-go for nvim, based on gopls
 
-```bash
+```sh
 go install golang.org/x/tools/gopls@latest
 :CocInstall coc-go
 ```
 
+- golangci-lint
+
+```sh
+brew tap golangci/tap
+brew install golangci/tap/golangci-lint
+golangci-lint run
+```
+
 - errcheck
 
-```bash
+```sh
 go install github.com/kisielk/errcheck@latest
 errcheck ./...
 ```
 
 - go vet (built-in)
 
-```bash
+```sh
 go vet
 ```
 
 - staticcheck
 
-```bash
+```sh
 brew install staticcheck
 staticcheck [flags] [package]
 ```

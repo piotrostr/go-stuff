@@ -1,14 +1,15 @@
 package functions_test
 
 import (
-	"asdf/functions"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"asdf/functions"
 )
 
 func TestMain(t *testing.T) {
 	got := functions.MyFunc()
 	want := true
-	assert.Equal(t, got, want)
+	if got != want {
+		t.Errorf("error: got %t want %t", got, want)
+	}
 }

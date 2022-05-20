@@ -7,7 +7,7 @@ import (
 )
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hello"))
+	fmt.Fprint(w, "hello")
 }
 
 func runServer() {
