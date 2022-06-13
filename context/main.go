@@ -1,9 +1,18 @@
 package main
 
 import (
-	"ctx/with/server"
+	"ctx/with/requests"
+	_ "ctx/with/server"
+)
+
+const (
+	GOOGLE = "https://www.google.com"
+	YAHOO  = "https://www.yahoo.com"
+	BING   = "https://www.bing.com"
 )
 
 func main() {
-	server.Run()
+	requests.Get(GOOGLE)
+	requests.Get(YAHOO)
+	requests.Get(BING)
 }
