@@ -1,24 +1,26 @@
 package requests
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
+	"time"
 )
 
 func Get(ch chan string, url string) {
-	fmt.Println("GET", url)
+	println("GET", strings.Split(url, "//")[1])
+	start := time.Now()
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(err)
+		println(err)
 		return
 	}
 	defer resp.Body.Close()
-	fmt.Println("Status code:", resp.StatusCode)
 	buf := make([]byte, 1024)
 	_, err = resp.Body.Read(buf)
 	if err != nil {
-		fmt.Println(err)
+		println(err)
 		return
 	}
-	ch <- string(buf[:10]) + "..."
+	elapsed := time.Since(start)
+	ch <- string(url + ": " + elapsed.String())
 }

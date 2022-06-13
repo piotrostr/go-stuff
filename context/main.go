@@ -2,7 +2,6 @@ package main
 
 import (
 	"ctx/with/requests"
-	_ "ctx/with/server"
 )
 
 const (
