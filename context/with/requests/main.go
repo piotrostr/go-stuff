@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Get(url string) {
+func Get(ch chan string, url string) {
 	fmt.Println("GET", url)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -20,4 +20,5 @@ func Get(url string) {
 		fmt.Println(err)
 		return
 	}
+	ch <- string(buf[:10]) + "..."
 }

@@ -12,7 +12,20 @@ const (
 )
 
 func main() {
-	requests.Get(GOOGLE)
-	requests.Get(YAHOO)
-	requests.Get(BING)
+	google := make(chan string)
+	yahoo := make(chan string)
+	bing := make(chan string)
+	go requests.Get(google, GOOGLE)
+	go requests.Get(yahoo, YAHOO)
+	go requests.Get(bing, BING)
+	for i := 0; i < 3; i++ {
+		select {
+		case s := <-google:
+			println(s)
+		case s := <-yahoo:
+			println(s)
+		case s := <-bing:
+			println(s)
+		}
+	}
 }
